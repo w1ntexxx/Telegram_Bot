@@ -1,4 +1,3 @@
-import os
 import asyncio
 import logging
 
@@ -8,10 +7,9 @@ from aiohttp import ClientSession
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart, Command
 from DataBase import DataBase
-from dotenv import load_dotenv
+from configs import BOT_TOKEN, API_URL, API_KEY
 
-load_dotenv()
-BOT_TOKEN = os.getenv(os.getenv("TOKEN"))
+headers = {"x-api-key": API_URL}
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
@@ -24,9 +22,19 @@ async def get_cat(url, headers):
             return cat_data[0]["url"]
 
 
+@dp.message(CommandStart)
+async def start(message: types.Message):
+    id = f'{message.chat.id}'
+    # added in base id
+    tg = DataBase("telegram.db")
+    tg.insert("users", ('chat_id', ), (id,))
+    
+    await message.answer("Hello, my command is /cat")
+    
+    
 @dp.message(Command("cat"))
 async def send_cat(message: types.Message):
-    cat_url = await get_cat(api_url, headers)
+    cat_url = await get_cat(API_URL, headers)
     await bot.send_photo(message.chat.id, photo=cat_url)
 
 
@@ -35,5 +43,5 @@ async def main():
     await dp.start_polling(bot)
 
 
-# if __name__ == "__main__":
-#     asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())

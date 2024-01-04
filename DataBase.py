@@ -26,11 +26,11 @@ class DataBase:
             self.con, self.cursor = None
             print(f"Database {self.db_path} disconnect")
 
-    def insert(self, column: tuple, values: tuple):
+    def insert(self, table, column: tuple, values: tuple):
         try:
             places = ",".join(["?" for _ in values])
             column_str = ", ".join(column)
-            request = f"INSERT INTO {self.db_path} ({column_str}) VALUES ({places})"
+            request = f"INSERT INTO {table} ({column_str}) VALUES ({places})"
             self.cursor.execute(request, values)
             self.con.commit()
             print("Inserted successfully")
@@ -52,3 +52,35 @@ class DataBase:
         except sq.Error as e:
             print(f"Error get: {e}")
             return None
+
+    def delete_columns(self, table):
+        try:
+            self.cursor.execute(f"DELETE FROM {table}")
+            self.con.commit()
+            print("Deleted successfully")
+        except sq.Error as e:
+            print("Error delete : {e}")
+
+    def delete_table(self, table):
+        try:
+            self.cursor.execute(f"DROP TABLE {table}")
+            self.con.commit()
+            print("Deleted successfully")
+        except sq.Error as e:
+            print("Error delete table: {e}")
+            
+            
+with sq.connect("telegram.db") as con:
+    cursor = con.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users
+        (
+            users_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            chat_id INTEGER UNIQUE
+        );
+    ''')
+    con.commit()
+
+
+
+

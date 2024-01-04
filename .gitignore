@@ -1,0 +1,5 @@
+.env
+.venvtg
+telegram.db
+example.py
+__pycache__
