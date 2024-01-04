@@ -8,9 +8,9 @@ class DataBase:
         self.cursor = None
         self.connect()
 
-    def __iter__(self):
-        for x in self.cursor.fetchall():
-            yield x
+    # def __iter__(self):
+    #     for x in self.cursor.fetchall():
+    #         yield x
 
     def connect(self):
         try:
@@ -18,7 +18,7 @@ class DataBase:
             self.cursor = self.con.cursor()
             self.con.commit()
         except sq.Error as e:
-            print(f"Error connection: {e}")
+            print(f"ERROR connection: {e}")
 
     def disconnect(self):
         if self.con:
@@ -35,7 +35,7 @@ class DataBase:
             self.con.commit()
             print("Inserted successfully")
         except sq.Error as e:
-            print(f"Error insert: {e}")
+            print(f"ERROR insert: {e}")
 
     def get(self, table, columns="*", add_request=None):
         try:
@@ -48,9 +48,9 @@ class DataBase:
                 requset += " " + add_request
 
             self.cursor.execute(requset)
-            return self
+            return self.cursor.fetchall()
         except sq.Error as e:
-            print(f"Error get: {e}")
+            print(f"ERROR get: {e}")
             return None
 
     def delete_columns(self, table):
@@ -59,7 +59,7 @@ class DataBase:
             self.con.commit()
             print("Deleted successfully")
         except sq.Error as e:
-            print("Error delete : {e}")
+            print("ERROR delete : {e}")
 
     def delete_table(self, table):
         try:
@@ -67,20 +67,4 @@ class DataBase:
             self.con.commit()
             print("Deleted successfully")
         except sq.Error as e:
-            print("Error delete table: {e}")
-            
-            
-with sq.connect("telegram.db") as con:
-    cursor = con.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users
-        (
-            users_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            chat_id INTEGER UNIQUE
-        );
-    ''')
-    con.commit()
-
-
-
-
+            print("ERROR delete table: {e}")
