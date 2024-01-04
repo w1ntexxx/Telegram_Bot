@@ -8,9 +8,6 @@ class DataBase:
         self.cursor = None
         self.connect()
 
-    # def __iter__(self):
-    #     for x in self.cursor.fetchall():
-    #         yield x
 
     def connect(self):
         try:

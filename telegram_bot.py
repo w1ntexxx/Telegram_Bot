@@ -8,7 +8,7 @@ from aiogram.filters import CommandStart, Command
 from DataBase import DataBase  # my module
 from configs import BOT_TOKEN, API_URL, API_KEY
 
-headers = {"x-api-key": API_URL}
+headers = {"x-api-key": API_KEY}
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
@@ -22,7 +22,7 @@ async def get_cat(url, headers):
             return cat_data[0]["url"]
 
 
-@dp.message(CommandStart)
+@dp.message(CommandStart())
 async def start(message: types.Message):
     id = f"{message.chat.id}"
     # added in base id
